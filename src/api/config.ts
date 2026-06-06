@@ -10,5 +10,5 @@ export function resolveApiBaseUrl(): string {
     return 'https://10.0.2.2:44366/api/v1';
   }
 
-  return 'https://localhost:44366/api/v1';
+  return 'https://busvuelosapi0517-f7bxa0hjh8f8a2at.brazilsouth-01.azurewebsites.net/api/v1';
 }

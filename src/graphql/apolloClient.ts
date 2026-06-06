@@ -11,10 +11,12 @@ export function resolveGraphqlUri(): string {
   }
 
   if (Platform.OS === 'android' && !Device.isDevice) {
-    return 'https://10.0.2.2:7299/graphql';
+    return 'https://10.0.2.2:5000/graphql';
   }
 
-  return 'https://localhost:7299/graphql';
+  //return 'http://localhost:5000/graphql';
+  return 'https://marketplacebff-bgefeuhkb9hge4cx.chilecentral-01.azurewebsites.net/graphql';
+  //return 'https://marketplacebff-bgefeuhkb9hge4cx.chilecentral-01.azurewebsites.net';
 }
 
 function fetchWithTimeout(
