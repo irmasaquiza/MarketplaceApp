@@ -1,31 +1,51 @@
 import { useQuery } from '@apollo/client/react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { CheckoutStepper } from '@/components/marketplace/CheckoutStepper';
+import { LoginModal } from '@/components/marketplace/LoginModal';
 import { PrimaryButton } from '@/components/marketplace/PrimaryButton';
 import { ScreenContainer } from '@/components/marketplace/ScreenContainer';
+import { SeatMap } from '@/components/marketplace/SeatMap';
 import { StateMessage } from '@/components/marketplace/StateMessage';
 import { ThemedText } from '@/components/themed-text';
-import { useCheckout, type AsientoSeleccionado } from '@/context/CheckoutContext';
+import { useAuth } from '@/context/AuthContext';
+import { useCheckout } from '@/context/CheckoutContext';
 import { ASIENTOS_POR_VUELO } from '@/graphql/queries/marketplaceQueries';
 import type { AsientosPorVueloData } from '@/graphql/types/marketplaceTypes';
-import { formatMoney } from '@/utils/pricing';
-import { Brand, Spacing } from '@/constants/theme';
+import { Brand } from '@/constants/theme';
 import { Routes } from '@/utils/navigation';
 
 export default function AsientosScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const idVuelo = Number(id);
+  const { isAuthenticated } = useAuth();
   const { asiento, setAsiento, claseSeleccionada, pasajero } = useCheckout();
 
   const { data, loading, error } = useQuery<AsientosPorVueloData>(ASIENTOS_POR_VUELO, {
     variables: { idVuelo, clase: claseSeleccionada },
-    skip: !idVuelo,
+    skip: !idVuelo || !isAuthenticated,
   });
 
   const asientos = data?.asientosPorVuelo ?? [];
+
+  if (!isAuthenticated) {
+    return (
+      <ScreenContainer>
+        <CheckoutStepper pasoActual={3} />
+        <LoginModal
+          visible
+          onAuthenticated={() => undefined}
+          onCancel={() => router.replace(Routes.home)}
+        />
+        <StateMessage
+          title="Autenticacion requerida"
+          description="Inicia sesion para ver y seleccionar asientos."
+        />
+      </ScreenContainer>
+    );
+  }
 
   if (!pasajero) {
     return (
@@ -64,31 +84,11 @@ export default function AsientosScreen() {
       {asientos.length === 0 ? (
         <StateMessage title="No hay asientos disponibles" />
       ) : (
-        <View style={styles.grid}>
-          {asientos.map((item: AsientoSeleccionado) => {
-            const selected = asiento?.idAsiento === item.idAsiento;
-            const disabled = !item.disponible;
-
-            return (
-              <Pressable
-                key={item.idAsiento}
-                disabled={disabled}
-                onPress={() => setAsiento(item)}
-                style={[
-                  styles.seat,
-                  selected && styles.seatSelected,
-                  disabled && styles.seatDisabled,
-                ]}>
-                <ThemedText style={[styles.seatNumber, selected && styles.seatNumberSelected]}>
-                  {item.numeroAsiento}
-                </ThemedText>
-                <ThemedText style={styles.seatMeta}>
-                  {item.disponible ? formatMoney(item.precioExtra) : 'Ocupado'}
-                </ThemedText>
-              </Pressable>
-            );
-          })}
-        </View>
+        <SeatMap
+          seats={asientos}
+          selectedSeatId={asiento?.idAsiento}
+          onSelectSeat={setAsiento}
+        />
       )}
 
       <PrimaryButton
@@ -110,41 +110,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Brand.textMuted,
     fontWeight: '500',
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.two,
-  },
-  seat: {
-    width: '30%',
-    minWidth: 96,
-    backgroundColor: Brand.surface,
-    borderWidth: 1,
-    borderColor: Brand.border,
-    borderRadius: 16,
-    padding: Spacing.two,
-    alignItems: 'center',
-    gap: 4,
-  },
-  seatSelected: {
-    borderColor: Brand.primary,
-    backgroundColor: '#FFF5F5',
-  },
-  seatDisabled: {
-    opacity: 0.45,
-  },
-  seatNumber: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: Brand.text,
-  },
-  seatNumberSelected: {
-    color: Brand.primary,
-  },
-  seatMeta: {
-    fontSize: 11,
-    color: Brand.textMuted,
-    fontWeight: '600',
   },
 });

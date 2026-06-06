@@ -22,6 +22,8 @@ type ComboBoxProps = {
   options: ComboBoxOption[];
   onChange: (value: string) => void;
   placeholder?: string;
+  searchPlaceholder?: string;
+  emptyMessage?: string;
   loading?: boolean;
   disabled?: boolean;
 };
@@ -32,6 +34,8 @@ export function ComboBox({
   options,
   onChange,
   placeholder = 'Seleccionar...',
+  searchPlaceholder = 'Buscar...',
+  emptyMessage = 'No hay opciones disponibles.',
   loading = false,
   disabled = false,
 }: ComboBoxProps) {
@@ -70,7 +74,7 @@ export function ComboBox({
               style={styles.search}
               value={filter}
               onChangeText={setFilter}
-              placeholder="Buscar aeropuerto..."
+              placeholder={searchPlaceholder}
               placeholderTextColor={Brand.textMuted}
               autoCapitalize="none"
             />
@@ -79,7 +83,7 @@ export function ComboBox({
               keyExtractor={(item) => item.value}
               style={styles.list}
               ListEmptyComponent={
-                <ThemedText style={styles.empty}>No hay aeropuertos disponibles.</ThemedText>
+                <ThemedText style={styles.empty}>{emptyMessage}</ThemedText>
               }
               renderItem={({ item }) => (
                 <Pressable

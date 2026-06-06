@@ -8,7 +8,9 @@ export function useColorScheme() {
   const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
-    setHasHydrated(true);
+    const hydrationTick = setTimeout(() => setHasHydrated(true), 0);
+
+    return () => clearTimeout(hydrationTick);
   }, []);
 
   const colorScheme = useRNColorScheme();

@@ -1,4 +1,5 @@
 import DateTimePicker, { type DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import type { CSSProperties } from 'react';
 import { useState } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
@@ -21,6 +22,25 @@ function formatDisplayDate(date: Date) {
   });
 }
 
+function toDateInputValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function fromDateInputValue(value: string) {
+  const [year, month, day] = value.split('-').map(Number);
+
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  const date = new Date(year, month - 1, day);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
 export function toIsoDateStart(date: Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -40,6 +60,27 @@ export function DateField({ label, value, onChange, minimumDate }: DateFieldProp
       onChange(selected);
     }
   };
+
+  if (Platform.OS === 'web') {
+    return (
+      <View style={styles.wrapper}>
+        <ThemedText style={styles.label}>{label}</ThemedText>
+        <input
+          type="date"
+          value={toDateInputValue(value)}
+          min={minimumDate ? toDateInputValue(minimumDate) : undefined}
+          onChange={(event) => {
+            const selected = fromDateInputValue(event.currentTarget.value);
+
+            if (selected) {
+              onChange(selected);
+            }
+          }}
+          style={webStyles.dateInput}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.wrapper}>
@@ -100,3 +141,21 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+
+const webStyles = {
+  dateInput: {
+    backgroundColor: Brand.background,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: Brand.border,
+    borderRadius: CardRadius,
+    padding: '14px 8px',
+    fontSize: 16,
+    fontWeight: 600,
+    color: Brand.text,
+    outlineColor: Brand.primary,
+    width: '100%',
+    boxSizing: 'border-box',
+    fontFamily: 'inherit',
+  } satisfies CSSProperties,
+};
