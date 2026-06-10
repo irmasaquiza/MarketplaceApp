@@ -3,12 +3,16 @@
     "name": "MarketplaceApp",
     "slug": "MarketplaceApp",
     "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "marketplaceapp",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.irmasaquiza.MarketplaceApp",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
@@ -24,7 +28,6 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
@@ -39,17 +42,7 @@
           }
         }
       ],
-      "@react-native-community/datetimepicker"
-    ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
-    },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "687dcefc-e5fc-4db6-9eb9-bced857165ee"
-      }
-    }
+      "expo-image"
+    ]
   }
 }
