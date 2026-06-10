@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BottomTabInset, Brand, MaxContentWidth, Spacing } from '@/constants/theme';
@@ -31,17 +31,24 @@ export function ScreenContainer({
   );
 
   if (!scroll) {
-    return <View style={styles.root}>{content}</View>;
+    return (
+      <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        {content}
+      </KeyboardAvoidingView>
+    );
   }
 
   return (
-    <ScrollView
-      style={styles.root}
-      contentContainerStyle={styles.scrollContent}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}>
-      {content}
-    </ScrollView>
+    <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <ScrollView
+        style={styles.root}
+        contentContainerStyle={styles.scrollContent}
+        keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'none'}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        {content}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

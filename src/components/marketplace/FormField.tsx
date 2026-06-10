@@ -33,8 +33,12 @@ export function FormField({
         placeholder={placeholder}
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
+        autoCorrect={false}
+        autoComplete="off"
+        textContentType="none"
         secureTextEntry={secureTextEntry}
         placeholderTextColor={Brand.textMuted}
+        selectionColor={Brand.primary}
         style={[styles.input, error ? styles.inputError : null]}
       />
       {error ? <ThemedText style={styles.error}>{error}</ThemedText> : null}
@@ -59,7 +63,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     fontSize: 16,
+    lineHeight: 22,
     color: Brand.text,
+    minHeight: 48,
   },
   inputError: {
     borderColor: Brand.error,

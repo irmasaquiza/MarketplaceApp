@@ -90,13 +90,19 @@ export function DateField({ label, value, onChange, minimumDate }: DateFieldProp
       </Pressable>
 
       {showPicker ? (
-        <DateTimePicker
-          value={value}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          minimumDate={minimumDate}
-          onChange={handleChange}
-        />
+        <View style={Platform.OS === 'ios' ? styles.iosPickerContainer : undefined}>
+          <DateTimePicker
+            value={value}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'inline' : 'default'}
+            minimumDate={minimumDate}
+            onChange={handleChange}
+            accentColor={Brand.primary}
+            themeVariant="light"
+            textColor={Brand.text}
+            style={Platform.OS === 'ios' ? styles.iosPicker : undefined}
+          />
+        </View>
       ) : null}
 
       {Platform.OS === 'ios' && showPicker ? (
@@ -135,6 +141,17 @@ const styles = StyleSheet.create({
   doneButton: {
     alignSelf: 'flex-end',
     paddingVertical: 8,
+  },
+  iosPickerContainer: {
+    backgroundColor: Brand.surface,
+    borderWidth: 1,
+    borderColor: Brand.border,
+    borderRadius: 18,
+    overflow: 'hidden',
+  },
+  iosPicker: {
+    width: '100%',
+    height: 340,
   },
   doneText: {
     color: Brand.primary,
