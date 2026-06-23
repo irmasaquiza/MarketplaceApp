@@ -12,13 +12,13 @@ import { PrimaryButton } from '@/components/marketplace/PrimaryButton';
 import { ScreenContainer } from '@/components/marketplace/ScreenContainer';
 import { StateMessage } from '@/components/marketplace/StateMessage';
 import { ThemedText } from '@/components/themed-text';
+import { Brand, CardRadius, Spacing } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useCheckout } from '@/context/CheckoutContext';
 import { AEROPUERTOS, BUSCAR_VUELOS } from '@/graphql/queries/marketplaceQueries';
 import type { AeropuertosData, BuscarVuelosData } from '@/graphql/types/marketplaceTypes';
 import { formatGraphqlError } from '@/utils/graphqlError';
 import { vueloDetalleHref } from '@/utils/navigation';
-import { Brand, CardRadius, Spacing } from '@/constants/theme';
 
 const DEFAULT_ORIGEN = 'UIO';
 const DEFAULT_DESTINO = 'GYE';
@@ -101,7 +101,7 @@ export default function BuscarVuelosScreen() {
           fecha: toIsoDateStart(fecha),
           clase,
           page: 1,
-          limit: 10,
+          limit: 50,
         },
       },
     });

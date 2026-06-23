@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, View } from 'react-native';
+import { Platform, StyleSheet, TextInput, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { Brand, Spacing } from '@/constants/theme';
@@ -11,6 +11,7 @@ type FormFieldProps = {
   keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad';
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   secureTextEntry?: boolean;
+  editable?: boolean;
   error?: string;
 };
 
@@ -22,6 +23,7 @@ export function FormField({
   keyboardType = 'default',
   autoCapitalize = 'none',
   secureTextEntry = false,
+  editable = true,
   error,
 }: FormFieldProps) {
   return (
@@ -30,16 +32,23 @@ export function FormField({
       <TextInput
         value={value}
         onChangeText={onChangeText}
-        placeholder={placeholder}
+        placeholder={placeholder ?? label}
+        placeholderTextColor={Brand.textMuted}
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
         autoCorrect={false}
-        autoComplete="off"
-        textContentType="none"
+        spellCheck={false}
         secureTextEntry={secureTextEntry}
-        placeholderTextColor={Brand.textMuted}
+        editable={editable}
         selectionColor={Brand.primary}
-        style={[styles.input, error ? styles.inputError : null]}
+        underlineColorAndroid="transparent"
+        style={[
+          styles.input,
+          error ? styles.inputError : null,
+          !editable ? styles.inputDisabled : null,
+          // Android necesita color explícito en el propio estilo inline
+          Platform.OS === 'android' ? { color: Brand.text } : null,
+        ]}
       />
       {error ? <ThemedText style={styles.error}>{error}</ThemedText> : null}
     </View>
@@ -61,11 +70,14 @@ const styles = StyleSheet.create({
     backgroundColor: Brand.inputBg,
     borderRadius: 14,
     paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
+    paddingVertical: Platform.OS === 'android' ? 10 : Spacing.two,
     fontSize: 16,
-    lineHeight: 22,
     color: Brand.text,
     minHeight: 48,
+  },
+  inputDisabled: {
+    opacity: 0.5,
+    backgroundColor: Brand.border,
   },
   inputError: {
     borderColor: Brand.error,

@@ -10,14 +10,13 @@ import { ScreenContainer } from '@/components/marketplace/ScreenContainer';
 import { StateMessage } from '@/components/marketplace/StateMessage';
 import { SummaryCard } from '@/components/marketplace/SummaryCard';
 import { ThemedText } from '@/components/themed-text';
+import { Brand, CardRadius, Spacing } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useCheckout } from '@/context/CheckoutContext';
 import { PAGAR_RESERVA } from '@/graphql/mutations/marketplaceMutations';
 import type { PagarReservaData } from '@/graphql/types/marketplaceTypes';
-import { CARGO_SERVICIO_DEFAULT, formatMoney } from '@/utils/pricing';
-import { formatGraphqlError } from '@/utils/graphqlError';
 import { Routes } from '@/utils/navigation';
-import { Brand, CardRadius, Spacing } from '@/constants/theme';
+import { CARGO_SERVICIO_DEFAULT, formatMoney } from '@/utils/pricing';
 
 const PASOS_PAGO = [
   'Generando factura y boleto',
@@ -147,8 +146,8 @@ export default function PagoScreen() {
 
       {error ? (
         <StateMessage
-          title="Error al pagar"
-          description={`${formatGraphqlError(error)}. Si la reserva ya fue creada, puedes reintentar el pago sin volver a crear la reserva.`}
+          title="No se pudo realizar la reserva"
+          description="Ocurrió un error al procesar el pago. Por favor intenta nuevamente."
           variant="error"
         />
       ) : null}

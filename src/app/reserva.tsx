@@ -9,14 +9,13 @@ import { ScreenContainer } from '@/components/marketplace/ScreenContainer';
 import { StateMessage } from '@/components/marketplace/StateMessage';
 import { SummaryCard } from '@/components/marketplace/SummaryCard';
 import { ThemedText } from '@/components/themed-text';
+import { Brand } from '@/constants/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useCheckout, type PasajeroRegistrado } from '@/context/CheckoutContext';
 import { CREAR_RESERVA } from '@/graphql/mutations/marketplaceMutations';
 import type { CrearReservaData } from '@/graphql/types/marketplaceTypes';
-import { buildCheckoutTotales } from '@/utils/pricing';
-import { formatGraphqlError } from '@/utils/graphqlError';
 import { Routes } from '@/utils/navigation';
-import { Brand } from '@/constants/theme';
+import { buildCheckoutTotales } from '@/utils/pricing';
 
 const OBSERVACIONES_RESERVA = 'Reserva desde MarketplaceApp';
 
@@ -244,8 +243,8 @@ export default function CrearReservaScreen() {
 
       {error ? (
         <StateMessage
-          title="Error al crear reserva"
-          description={formatGraphqlError(error)}
+          title="No se pudo realizar la reserva"
+          description="Ocurrió un error al generar la reserva. Por favor intenta nuevamente."
           variant="error"
         />
       ) : null}

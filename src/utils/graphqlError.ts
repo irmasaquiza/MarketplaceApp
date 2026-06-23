@@ -27,19 +27,25 @@ export function formatGraphqlError(error: unknown): string {
     }
   }
 
-  if (apolloError.networkError?.message) {
-    if (apolloError.networkError.message.includes('AbortError')) {
+  if (apolloError.networkError) {
+    const netMsg = apolloError.networkError.message ?? '';
+    if (netMsg.includes('AbortError')) {
       return 'La solicitud tardó demasiado. Verifica tu conexión e inténtalo de nuevo.';
     }
-    return apolloError.networkError.message;
+    // Network error or 500 — hide technical details
+    return 'No se pudo realizar la reserva. Por favor intenta nuevamente.';
   }
 
   if (error instanceof Error && error.message) {
     if (error.message.includes('Cannot return null for non-nullable field')) {
       return 'El servidor devolvió datos incompletos. Reinicia el BFF y vuelve a intentar.';
     }
+    // If the message looks like a status code error, replace with friendly message
+    if (/\b5\d{2}\b/.test(error.message) || error.message.toLowerCase().includes('network')) {
+      return 'No se pudo realizar la reserva. Por favor intenta nuevamente.';
+    }
     return error.message;
   }
 
-  return 'No se pudo completar la operación GraphQL.';
+  return 'No se pudo realizar la reserva. Por favor intenta nuevamente.';
 }
